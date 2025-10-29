@@ -2,12 +2,12 @@ pipeline {
     agent any
 
     tools {
-        nodejs 'NodeJS'
+        nodejs 'NodeJS'   // Make sure you configured NodeJS tool in Jenkins > Global Tool Configuration
     }
 
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch to build from')
-        string(name: 'STUDENT_NAME', defaultValue: 'Muhammad Ammar', description: 'Provide your name here — no name, no marks')
+        string(name: 'STUDENT_NAME', defaultValue: 'Muhammad Ammar', description: 'Your name (required)')
         choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'prod'], description: 'Select environment')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run Jest tests after build')
     }
@@ -18,6 +18,7 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 echo "Checking out branch: ${params.BRANCH_NAME}"
@@ -38,7 +39,7 @@ pipeline {
                 bat '''
                 echo Simulating build process...
                 if not exist build mkdir build
-                copy *.js build
+                copy src\\*.js build
                 echo Build completed successfully!
                 echo App version: %APP_VERSION% > build\\version.txt
                 '''
@@ -67,6 +68,13 @@ pipeline {
                 echo "Simulating deployment of version ${APP_VERSION} to ${params.ENVIRONMENT}"
             }
         }
+
+        stage('Archive Artifact') {
+            steps {
+                echo "Archiving build ZIP file..."
+                archiveArtifacts artifacts: 'build_*.zip', fingerprint: true
+            }
+        }
     }
 
     post {
@@ -75,10 +83,10 @@ pipeline {
             deleteDir()
         }
         success {
-            echo "Pipeline succeeded! Version ${APP_VERSION} built and tested."
+            echo "✅ Pipeline succeeded by Developer Ammar! Version ${APP_VERSION} built and tested successfully."
         }
         failure {
-            echo "Pipeline failed! Check console output for details."
+            echo "❌ Pipeline failed! Check console output for details."
         }
     }
 }
