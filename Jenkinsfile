@@ -7,7 +7,7 @@ pipeline {
 
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch to build from')
-        string(name: 'STUDENT_NAME', defaultValue: 'Muhammad Ammar', description: 'Your name (required)')
+        string(name: 'STUDENT_NAME', defaultValue: 'Azfaar', description: 'Your name (required)')
         choice(name: 'ENVIRONMENT', choices: ['dev', 'qa', 'prod'], description: 'Select environment')
         booleanParam(name: 'RUN_TESTS', defaultValue: true, description: 'Run Jest tests after build')
     }
@@ -83,7 +83,7 @@ pipeline {
             deleteDir()
         }
         success {
-            echo "✅ Pipeline succeeded by Developer Ammar! Version ${APP_VERSION} built and tested successfully."
+            echo "✅ Pipeline succeeded by Azfaar! Version ${APP_VERSION} built and tested successfully."
         }
         failure {
             echo "❌ Pipeline failed! Check console output for details."
